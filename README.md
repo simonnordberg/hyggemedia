@@ -59,7 +59,8 @@ Replace <source_directory> with the path to the directory containing the media f
 ./hyggemedia organize \
     --src-dir /path/to/source \
     --dest-dir /path/to/destination \
-    --title "Friends" \ --dry-run
+    --title "Friends" \ 
+    --dry-run
 ```
 ### Move files instead of copying them
 ```bash
