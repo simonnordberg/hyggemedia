@@ -155,11 +155,10 @@ func generateNewName(oldName, showName string) (string, error) {
 		return "", fmt.Errorf("could not extract season and episode information from %s", oldName)
 	}
 
-	season := matches[1]
-	episode := matches[2]
+	season, _ := strconv.Atoi(matches[1])
+	episode, _ := strconv.Atoi(matches[2])
 
-	newName := fmt.Sprintf("%s S%sE%s%s", showName, season, episode, filepath.Ext(oldName))
-	return newName, nil
+	return fmt.Sprintf("%s S%02dE%02d%s", showName, season, episode, filepath.Ext(oldName)), nil
 }
 
 func isValidExtension(fileName string) bool {

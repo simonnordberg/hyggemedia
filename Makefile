@@ -1,4 +1,4 @@
-.PHONY: all clean build
+.PHONY: all clean build test
 
 all: build
 
@@ -7,3 +7,6 @@ build:
 
 clean:
 	rm -f hyggemedia
+
+test:
+	go test ./...
