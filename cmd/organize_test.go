@@ -18,7 +18,7 @@ func TestGenerateNewName(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		newName, err := generateNewName(test.oldName, test.showName)
+		newName, err := generateFilename(test.oldName, test.showName)
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
@@ -99,7 +99,7 @@ func TestProcessSeasonFiles(t *testing.T) {
 
 	seasonDir := filepath.Join(destDir, "Show/Season 1")
 	for _, file := range files {
-		newName, _ := generateNewName(file, title)
+		newName, _ := generateFilename(file, title)
 		if _, err := os.Stat(filepath.Join(seasonDir, newName)); os.IsNotExist(err) {
 			t.Errorf("Expected file %s to exist", filepath.Join(seasonDir, newName))
 		}

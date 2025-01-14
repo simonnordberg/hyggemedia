@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"io"
+	"hyggemedia/internal/fileutils"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -61,21 +61,6 @@ func organizeFiles(srcDir, destDir, title string, dryRun bool) error {
 	return nil
 }
 
-func printSummary(seasonMap map[int][]string, title string) error {
-	seasons := make([]int, 0, len(seasonMap))
-	for season := range seasonMap {
-		seasons = append(seasons, season)
-	}
-	sort.Ints(seasons)
-
-	fmt.Printf("Organized %d seasons of %s\n", len(seasonMap), title)
-	for _, season := range seasons {
-		fmt.Printf("Season %d: %d episodes\n", season, len(seasonMap[season]))
-	}
-
-	return nil
-}
-
 func scanFiles(srcDir, title string) (map[int][]string, error) {
 	seasonMap := make(map[int][]string)
 	titlePattern := strings.Join(strings.Fields(title), `[\s\.\-_]`)
@@ -105,7 +90,7 @@ func scanFiles(srcDir, title string) (map[int][]string, error) {
 
 func processSeasonFiles(season int, files []string, destDir, title string, dryRun bool) error {
 	seasonDir := filepath.Join(destDir, fmt.Sprintf("%s/Season %d", title, season))
-	if err := createSeasonDir(seasonDir, dryRun); err != nil {
+	if err := fileutils.CreateDir(seasonDir, dryRun); err != nil {
 		return err
 	}
 
@@ -119,20 +104,8 @@ func processSeasonFiles(season int, files []string, destDir, title string, dryRu
 	return nil
 }
 
-func createSeasonDir(seasonDir string, dryRun bool) error {
-	if dryRun {
-		slog.Info("Would create directory", "directory", seasonDir)
-		return nil
-	}
-	if err := os.MkdirAll(seasonDir, os.ModePerm); err != nil {
-		return err
-	}
-	slog.Debug("Created directory", "directory", seasonDir)
-	return nil
-}
-
 func processFile(file, seasonDir, title string, dryRun bool) error {
-	newName, err := generateNewName(filepath.Base(file), title)
+	newName, err := generateFilename(filepath.Base(file), title)
 	if err != nil {
 		slog.Warn("Skipping file", "file", file, "reason", err)
 		return err
@@ -144,15 +117,30 @@ func processFile(file, seasonDir, title string, dryRun bool) error {
 	return nil
 }
 
+func printSummary(seasonMap map[int][]string, title string) error {
+	seasons := make([]int, 0, len(seasonMap))
+	for season := range seasonMap {
+		seasons = append(seasons, season)
+	}
+	sort.Ints(seasons)
+
+	fmt.Printf("Organized %d seasons of %s\n", len(seasonMap), title)
+	for _, season := range seasons {
+		fmt.Printf("Season %d: %d episodes\n", season, len(seasonMap[season]))
+	}
+
+	return nil
+}
+
 func moveOrCopyFile(file, destPath string, dryRun bool) error {
 	if move {
-		if err := moveFile(file, destPath, dryRun); err != nil {
+		if err := fileutils.MoveFile(file, destPath, dryRun); err != nil {
 			slog.Error("Error moving file", "source", file, "destination", destPath, "reason", err)
 			return err
 		}
 		slog.Debug("Moved file", "source", file, "destination", destPath)
 	} else {
-		if err := copyFile(file, destPath, dryRun); err != nil {
+		if err := fileutils.CopyFile(file, destPath, dryRun); err != nil {
 			slog.Error("Error copying file", "source", file, "destination", destPath, "reason", err)
 			return err
 		}
@@ -161,7 +149,7 @@ func moveOrCopyFile(file, destPath string, dryRun bool) error {
 	return nil
 }
 
-func generateNewName(oldName, showName string) (string, error) {
+func generateFilename(oldName, showName string) (string, error) {
 	re := regexp.MustCompile(`(?i)S(\d{1,2})E(\d{1,2})`)
 	matches := re.FindStringSubmatch(oldName)
 	if len(matches) != 3 {
@@ -181,36 +169,4 @@ func isValidExtension(fileName string) bool {
 		}
 	}
 	return false
-}
-
-func moveFile(src, dst string, dryRun bool) error {
-	if dryRun {
-		slog.Info("Would move file", "source", src, "destination", dst)
-		return nil
-	}
-	return os.Rename(src, dst)
-}
-
-func copyFile(src, dst string, dryRun bool) error {
-	if dryRun {
-		slog.Info("Would copy file", "source", src, "destination", dst)
-		return nil
-	}
-	sourceFile, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer sourceFile.Close()
-
-	destFile, err := os.Create(dst)
-	if err != nil {
-		return err
-	}
-	defer destFile.Close()
-
-	if _, err = io.Copy(destFile, sourceFile); err != nil {
-		return err
-	}
-
-	return destFile.Sync()
 }
