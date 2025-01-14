@@ -10,8 +10,7 @@ import (
 )
 
 var (
-	showName string
-	dryRun   bool
+	dir string
 )
 
 var renameCmd = &cobra.Command{
@@ -20,7 +19,7 @@ var renameCmd = &cobra.Command{
 	Long:  `Rename media files to match the Emby format.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		dir, _ := cmd.Flags().GetString("dir")
-		if err := rename.RenameFiles(dir, dryRun, showName); err != nil {
+		if err := rename.RenameFiles(dir, dryRun, title); err != nil {
 			log.Fatalf("Error renaming files: %v", err)
 		}
 		fmt.Println("Files renamed successfully.")
@@ -29,7 +28,7 @@ var renameCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(renameCmd)
-	renameCmd.Flags().StringVarP(&showName, "show-name", "s", "", "Name of the show (mandatory)")
-	renameCmd.Flags().BoolVarP(&dryRun, "dry-run", "n", false, "Perform a dry run without renaming files")
+	renameCmd.Flags().StringVarP(&dir, "dir", "d", "", "Directory to rename files (mandatory)")
 	renameCmd.MarkFlagRequired("show-name")
+	renameCmd.MarkFlagRequired("dir")
 }
