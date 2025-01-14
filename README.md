@@ -13,7 +13,7 @@ Hygge Media is a command line application designed to rename and organize media 
 To install Hygge Media, clone the repository and build the application:
 
 ```bash
-git clone https://github.com/yourusername/hyggemedia.git
+git clone https://github.com/simonnordberg/hyggemedia.git
 cd hyggemedia
 make build
 ```
