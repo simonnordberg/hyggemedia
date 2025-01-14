@@ -24,8 +24,8 @@ var validExtensions = []string{".mp4", ".mkv", ".srt"}
 
 var organizeCmd = &cobra.Command{
 	Use:   "organize",
-	Short: "Organize media files",
-	Long:  `Organize media files into a structured format.`,
+	Short: "Organize media files into season and episode folders",
+	Long:  `This command scans the source directory for media files matching a specified title pattern, and organizes them into season and episode folders within the destination directory.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := organizeFiles(srcDir, destDir, title, dryRun); err != nil {
 			slog.Error("Error organizing files", "error", err)
