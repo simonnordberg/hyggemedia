@@ -1,5 +1,7 @@
 # Hygge Media
 
+![Go](https://github.com/simonnordberg/hyggemedia/actions/workflows/go.yml/badge.svg)
+
 Hygge Media is a command line application designed to rename and organize media files in a directory to match the format prescribed by [Emby](https://emby.media/). This tool simplifies the organization of your media library, ensuring that your files are named consistently and correctly.
 
 ## Features
