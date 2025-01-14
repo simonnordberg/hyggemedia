@@ -18,6 +18,7 @@ import (
 var (
 	srcDir  string
 	destDir string
+	move    bool
 )
 
 var validExtensions = []string{".mp4", ".mkv", ".srt"}
@@ -37,6 +38,7 @@ func init() {
 	rootCmd.AddCommand(organizeCmd)
 	organizeCmd.Flags().StringVarP(&srcDir, "src-dir", "s", "", "Source directory to scan for files (mandatory)")
 	organizeCmd.Flags().StringVarP(&destDir, "dest-dir", "d", "", "Destination directory to organize files into (mandatory)")
+	organizeCmd.Flags().BoolVarP(&move, "move", "m", false, "Move files intead of copying")
 	organizeCmd.MarkFlagRequired("src-dir")
 	organizeCmd.MarkFlagRequired("dest-dir")
 }
@@ -136,15 +138,26 @@ func processFile(file, seasonDir, title string, dryRun bool) error {
 		return err
 	}
 	destPath := filepath.Join(seasonDir, newName)
-	if dryRun {
-		slog.Info("Would copy file", "source", file, "destination", destPath)
-		return nil
-	}
-	if err := copyFile(file, destPath); err != nil {
-		slog.Error("Error copying file", "source", file, "destination", destPath, "reason", err)
+	if err := moveOrCopyFile(file, destPath, dryRun); err != nil {
 		return err
 	}
-	slog.Debug("Copied file", "source", file, "destination", destPath)
+	return nil
+}
+
+func moveOrCopyFile(file, destPath string, dryRun bool) error {
+	if move {
+		if err := moveFile(file, destPath, dryRun); err != nil {
+			slog.Error("Error moving file", "source", file, "destination", destPath, "reason", err)
+			return err
+		}
+		slog.Debug("Moved file", "source", file, "destination", destPath)
+	} else {
+		if err := copyFile(file, destPath, dryRun); err != nil {
+			slog.Error("Error copying file", "source", file, "destination", destPath, "reason", err)
+			return err
+		}
+		slog.Debug("Copied file", "source", file, "destination", destPath)
+	}
 	return nil
 }
 
@@ -170,7 +183,19 @@ func isValidExtension(fileName string) bool {
 	return false
 }
 
-func copyFile(src, dst string) error {
+func moveFile(src, dst string, dryRun bool) error {
+	if dryRun {
+		slog.Info("Would move file", "source", src, "destination", dst)
+		return nil
+	}
+	return os.Rename(src, dst)
+}
+
+func copyFile(src, dst string, dryRun bool) error {
+	if dryRun {
+		slog.Info("Would copy file", "source", src, "destination", dst)
+		return nil
+	}
 	sourceFile, err := os.Open(src)
 	if err != nil {
 		return err
