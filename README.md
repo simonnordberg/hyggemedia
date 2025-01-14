@@ -25,7 +25,10 @@ make build
 To use Hygge Media, run the following command in your terminal:
 
 ```bash
-./hyggemedia organize --src-dir <source_directory> --dest-dir <destination_directory> --title "<show_title>"
+./hyggemedia organize \ 
+    --src-dir <source_directory> \
+    --dest-dir <destination_directory> \
+    --title "<show_title>"
 ```
 
 Replace <source_directory> with the path to the directory containing the media files you want to organize, <destination_directory> with the path to the directory where you want the organized files to be placed, and <show_title> with the title of the show.
@@ -46,15 +49,25 @@ Replace <source_directory> with the path to the directory containing the media f
 ## Examples
 ### Organize media files for the show "Friends"
 ```bash
-./hyggemedia organize --src-dir /path/to/source --dest-dir /path/to/destination --title "Friends"
+./hyggemedia organize \
+    --src-dir /path/to/source \
+    --dest-dir /path/to/destination \
+    --title "Friends"
 ```
 ### Perform a dry run to see what changes would be made without actually making them
 ```bash
-./hyggemedia organize --src-dir /path/to/source --dest-dir /path/to/destination --title "Friends" --dry-run
+./hyggemedia organize \
+    --src-dir /path/to/source \
+    --dest-dir /path/to/destination \
+    --title "Friends" \ --dry-run
 ```
 ### Move files instead of copying them
 ```bash
-./hyggemedia organize --src-dir /path/to/source --dest-dir /path/to/destination --title "Friends" --move
+./hyggemedia organize \ 
+    --src-dir /path/to/source \
+    --dest-dir /path/to/destination \
+    --title "Friends" \
+    --move
 ```
 
 # Contributing
