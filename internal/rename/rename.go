@@ -22,7 +22,7 @@ func RenameFiles(dir string, dryRun bool, showName string) error {
 				return nil
 			}
 
-			newName, err := generateNewName(info.Name(), showName)
+			newName, err := GenerateNewName(info.Name(), showName)
 			if err != nil {
 				log.Printf("Skipping file: %s, reason: %v\n", path, err)
 				return nil
@@ -47,7 +47,7 @@ func RenameFiles(dir string, dryRun bool, showName string) error {
 }
 
 // generateNewName generates the new name according to Emby format.
-func generateNewName(oldName, showName string) (string, error) {
+func GenerateNewName(oldName, showName string) (string, error) {
 	// Example regex to extract season and episode information
 	re := regexp.MustCompile(`(?i)S(\d{1,2})E(\d{1,2})`)
 	matches := re.FindStringSubmatch(oldName)

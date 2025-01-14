@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"hyggemedia/internal/rename"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -40,6 +42,9 @@ func init() {
 func organizeFiles(srcDir, destDir, title string, dryRun bool) error {
 	seasonMap := make(map[int][]string)
 
+	titlePattern := strings.Join(strings.Fields(title), `[\s\.\-_]`)
+	re := regexp.MustCompile(`(?i)` + titlePattern + `.*S(\d{1,2})E(\d{1,2})`)
+
 	err := filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Printf("Error accessing path %q: %v\n", path, err)
@@ -51,7 +56,6 @@ func organizeFiles(srcDir, destDir, title string, dryRun bool) error {
 				return nil
 			}
 
-			re := regexp.MustCompile(`(?i)` + regexp.QuoteMeta(title) + `.*S(\d{1,2})E(\d{1,2})`)
 			matches := re.FindStringSubmatch(info.Name())
 			if len(matches) != 3 {
 				return nil
@@ -82,18 +86,45 @@ func organizeFiles(srcDir, destDir, title string, dryRun bool) error {
 		}
 
 		for _, file := range files {
-			destPath := filepath.Join(seasonDir, filepath.Base(file))
+			newName, err := rename.GenerateNewName(filepath.Base(file), title)
+			if err != nil {
+				log.Printf("Skipping file: %s, reason: %v\n", file, err)
+				continue
+			}
+
+			destPath := filepath.Join(seasonDir, newName)
 			if dryRun {
-				log.Printf("Would move: %s -> %s\n", file, destPath)
+				log.Printf("Would copy: %s -> %s\n", file, destPath)
 			} else {
-				if err := os.Rename(file, destPath); err != nil {
-					log.Printf("Error moving file: %s -> %s, reason: %v\n", file, destPath, err)
+				if err := copyFile(file, destPath); err != nil {
+					log.Printf("Error copying file: %s -> %s, reason: %v\n", file, destPath, err)
 					return err
 				}
-				log.Printf("Moved: %s -> %s\n", file, destPath)
+				log.Printf("Copied: %s -> %s\n", file, destPath)
 			}
 		}
 	}
 
 	return nil
+}
+
+func copyFile(src, dst string) error {
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		return err
+	}
+
+	return destFile.Sync()
 }
