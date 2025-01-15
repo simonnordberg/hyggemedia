@@ -3,7 +3,7 @@
 all: build
 
 build:
-	go build -o hyggemedia ./cmd/hyggemedia
+	go build -o hyggemedia .
 
 clean:
 	rm -f hyggemedia

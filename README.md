@@ -30,6 +30,14 @@ To use Hygge Media, run the following command in your terminal:
     --dest-dir <destination_directory> \
     --title "<show_title>"
 ```
+```bash
+./hyggeorganize tv \
+    --src-dir <src dir>
+    --dst-dir <dst dir>
+    --title <title>
+    --dry-run
+```
+
 
 Replace <source_directory> with the path to the directory containing the media files you want to organize, <destination_directory> with the path to the directory where you want the organized files to be placed, and <show_title> with the title of the show.
 
