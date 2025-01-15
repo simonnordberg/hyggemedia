@@ -4,18 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 )
-
-func IsMediaFile(file string) bool {
-	mediaExtensions := []string{".mp4", ".mkv", ".avi", ".srt"}
-	for _, ext := range mediaExtensions {
-		if strings.HasSuffix(strings.ToLower(file), ext) {
-			return true
-		}
-	}
-	return false
-}
 
 func MoveOrCopyFile(src, dst string, move, dryRun bool) error {
 	if move {
@@ -42,6 +31,9 @@ func CopyFile(src, dst string, dryRun bool) error {
 	defer output.Close()
 
 	_, err = io.Copy(output, input)
+	if err == nil {
+		fmt.Println("Copied", src, "to", dst)
+	}
 	return err
 }
 
