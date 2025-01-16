@@ -6,18 +6,14 @@ import (
 	"os"
 )
 
-func MoveOrCopyFile(src, dst string, move, dryRun bool) error {
+func MoveOrCopyFile(src, dst string, move bool) error {
 	if move {
-		return MoveFile(src, dst, dryRun)
+		return os.Rename(src, dst)
 	}
-	return CopyFile(src, dst, dryRun)
+	return CopyFile(src, dst)
 }
 
-func CopyFile(src, dst string, dryRun bool) error {
-	if dryRun {
-		fmt.Println("Would copy", src, "to", dst)
-		return nil
-	}
+func CopyFile(src, dst string) error {
 	input, err := os.Open(src)
 	if err != nil {
 		return err
@@ -37,19 +33,7 @@ func CopyFile(src, dst string, dryRun bool) error {
 	return err
 }
 
-func MoveFile(src, dst string, dryRun bool) error {
-	if dryRun {
-		fmt.Println("Would move", src, "to", dst)
-		return nil
-	}
-	return os.Rename(src, dst)
-}
-
-func CreateDir(dir string, dryRun bool) error {
-	if dryRun {
-		fmt.Println("Would create directory", dir)
-		return nil
-	}
+func CreateDir(dir string) error {
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		return err
 	}
