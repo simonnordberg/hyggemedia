@@ -25,6 +25,7 @@ func applyChanges(config *config.Config, changes file.Changes) error {
 func Organize(config *config.Config, finder find.MediaFinder) error {
 	changes, err := find.Find(finder, config)
 	if err != nil {
+		return err
 	}
 
 	err = applyChanges(config, changes)
