@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"hyggemedia/internal/config"
 	"hyggemedia/internal/file"
-	"hyggemedia/utils"
+	"hyggemedia/internal/utils"
 	"path/filepath"
 )
 
