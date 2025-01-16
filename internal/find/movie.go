@@ -2,21 +2,15 @@ package find
 
 import (
 	"fmt"
-	"hyggemedia/internal/config"
-	"hyggemedia/internal/file"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-type MovieMediaFinder struct{}
+type MovieMediaParser struct{}
 
-func (f MovieMediaFinder) Find(conf *config.Config) (file.Changes, error) {
-	return Find(f, conf)
-}
-
-func (o MovieMediaFinder) ParseMediaInfo(title, file string) (MediaInfo, error) {
+func (o MovieMediaParser) ParseMediaInfo(title, file string) (MediaInfo, error) {
 	titlePattern := strings.Join(strings.Fields(title), `[\s\.\-_]`)
 	re := regexp.MustCompile(`(?i)` + titlePattern + `.*[\s\.\-_\(\)]+(\d{4})[\s\.\-_\(\)]+`)
 	if matches := re.FindStringSubmatch(file); len(matches) == 2 {

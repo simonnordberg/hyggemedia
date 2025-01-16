@@ -11,7 +11,7 @@ var tvCmd = &cobra.Command{
 	Use:   "tv",
 	Short: "Organize TV shows",
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.Organize(cfg, find.TVMediaFinder{})
+		handlers.Organize(cfg, find.TvMediaParser{})
 	},
 }
 

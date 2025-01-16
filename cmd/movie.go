@@ -11,7 +11,7 @@ var movieCmd = &cobra.Command{
 	Use:   "movie",
 	Short: "Organize movie files",
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.Organize(cfg, find.MovieMediaFinder{})
+		handlers.Organize(cfg, find.MovieMediaParser{})
 	},
 }
 

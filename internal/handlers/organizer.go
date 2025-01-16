@@ -22,8 +22,8 @@ func applyChanges(config *config.Config, changes file.Changes) error {
 	return err
 }
 
-func Organize(config *config.Config, finder find.MediaFinder) error {
-	changes, err := find.Find(finder, config)
+func Organize(config *config.Config, parser find.MediaParser) error {
+	changes, err := find.Find(parser, config)
 	if err != nil {
 		return err
 	}

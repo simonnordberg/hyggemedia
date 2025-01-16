@@ -8,8 +8,7 @@ import (
 	"strings"
 )
 
-type MediaFinder interface {
-	Find(conf *config.Config) (file.Changes, error)
+type MediaParser interface {
 	ParseMediaInfo(title, file string) (MediaInfo, error)
 }
 
@@ -28,7 +27,7 @@ func isMediaFile(file string) bool {
 	return false
 }
 
-func Find(finder MediaFinder, conf *config.Config) (file.Changes, error) {
+func Find(parser MediaParser, conf *config.Config) (file.Changes, error) {
 	var changes file.Changes
 	err := filepath.Walk(conf.SourceDir, func(path string, fileInfo os.FileInfo, err error) error {
 		if err != nil {
@@ -39,7 +38,7 @@ func Find(finder MediaFinder, conf *config.Config) (file.Changes, error) {
 			return nil
 		}
 
-		info, err := finder.ParseMediaInfo(conf.Title, path)
+		info, err := parser.ParseMediaInfo(conf.Title, path)
 		if err != nil {
 			return nil
 		}
