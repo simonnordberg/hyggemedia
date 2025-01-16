@@ -22,7 +22,7 @@ func applyChanges(config *config.Config, changes file.Changes) error {
 	return err
 }
 
-func Organize(config *config.Config, parser find.MediaParser) error {
+func OrganizeMediaFiles(config *config.Config, parser find.MediaParser) error {
 	changes, err := find.Find(parser, config)
 	if err != nil {
 		return err

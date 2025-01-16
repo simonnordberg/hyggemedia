@@ -10,6 +10,8 @@ import (
 
 type TvMediaParser struct{}
 
+// Kludge: This is a kludgy solution to determine if a file is a media file and parse the relevant information.
+// For TV shows, the title is the show name and the season and episode number are extracted from the filename.
 func (o TvMediaParser) ParseMediaInfo(title, file string) (MediaInfo, error) {
 	titlePattern := strings.Join(strings.Fields(title), `[\s\.\-_]`)
 	re := regexp.MustCompile(`(?i)` + titlePattern + `.*S(\d{1,2})E(\d{1,2})`)

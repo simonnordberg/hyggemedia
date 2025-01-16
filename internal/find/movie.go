@@ -10,6 +10,8 @@ import (
 
 type MovieMediaParser struct{}
 
+// Kludge: This is a kludgy solution to determine if a file is a media file and parse the relevant information.
+// For movies, the title is the movie name and the year is extracted from the filename.
 func (o MovieMediaParser) ParseMediaInfo(title, file string) (MediaInfo, error) {
 	titlePattern := strings.Join(strings.Fields(title), `[\s\.\-_]`)
 	re := regexp.MustCompile(`(?i)` + titlePattern + `.*[\s\.\-_\(\)]+(\d{4})[\s\.\-_\(\)]+`)

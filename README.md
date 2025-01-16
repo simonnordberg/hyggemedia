@@ -25,21 +25,13 @@ make build
 To use Hygge Media, run the following command in your terminal:
 
 ```bash
-./hyggemedia organize \ 
-    --src-dir <source_directory> \
-    --dest-dir <destination_directory> \
-    --title "<show_title>"
-```
-```bash
-./hyggeorganize tv \
-    --src-dir <src dir>
-    --dst-dir <dst dir>
-    --title <title>
-    --dry-run
+./hyggemedia tv \ 
+    --source-dir <source directory> \
+    --target-dir <target directory> \
+    --title "<title>"
 ```
 
-
-Replace <source_directory> with the path to the directory containing the media files you want to organize, <destination_directory> with the path to the directory where you want the organized files to be placed, and <show_title> with the title of the show.
+Replace <source directory> with the path to the directory containing the media files you want to organize, <target directory> with the path to the directory where you want the organized files to be placed, and <title> with the title of the show.
 
 **Note:** Files will be copied by default (rather than moved) as a non-destructive operation.
 
@@ -47,36 +39,40 @@ Replace <source_directory> with the path to the directory containing the media f
 
 ### Global Options
 - `--title, -t` (required): Title of the show.
-- `--dry-run, -n`: Perform a dry run without making changes.
-
-### Organize Command Options
-- `--src-dir, -s` (required): Source directory to scan for files.
-- `--dest-dir, -d` (required): Destination directory to organize files into.
+- `--exec, -n`: Perform a dry run without making changes.
 - `--move, -m`: Move files instead of copying.
+- `--source-dir, -s` (required): Source directory to scan for files.
+- `--target-dir, -d` (required): Target directory to organize files into.
 
 ## Examples
 ### Organize media files for the show "Friends"
 ```bash
+./hyggemedia tv \ 
+    --source-dir /path/to/source \
+    --target-dir /path/to/target \
+    --title "Friends"
+
 ./hyggemedia organize \
     --src-dir /path/to/source \
     --dest-dir /path/to/destination \
     --title "Friends"
 ```
-### Perform a dry run to see what changes would be made without actually making them
+### Execute the changes, i.e. actually copy/move (-m) the files
 ```bash
 ./hyggemedia organize \
     --src-dir /path/to/source \
     --dest-dir /path/to/destination \
-    --title "Friends" \ 
-    --dry-run
+    --title "Friends" \
+    --exec
 ```
 ### Move files instead of copying them
 ```bash
-./hyggemedia organize \ 
+./hyggemedia organize \
     --src-dir /path/to/source \
     --dest-dir /path/to/destination \
     --title "Friends" \
-    --move
+    --move \
+    --exec
 ```
 
 # Contributing
